@@ -8,18 +8,18 @@ import 'package:flutterchat_app/models/user.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GroupChats extends StatefulWidget {
-  final String challengeId;
+  final String challengeID;
   final String groupId;
 
 
   GroupChats({
-    this.challengeId,
+    this.challengeID,
     this.groupId
   });
 
   @override
   _GroupChatsState createState() => _GroupChatsState(
-    challengeId:this.challengeId,
+    challengeID:this.challengeID,
     groupId:this.groupId
   );
 }
@@ -27,28 +27,30 @@ class GroupChats extends StatefulWidget {
 class _GroupChatsState extends State<GroupChats> {
   TextEditingController chatController = TextEditingController();
 
-  final String challengeId;
+  final String challengeID;
   final String groupId;
   bool memberExists;
 
-  _GroupChatsState({ this.challengeId,
+  _GroupChatsState({ this.challengeID,
     this.groupId});
    @override
    void initState(){
-     super.initState();
 
+     checkIfMemberExists()async{
+       DocumentSnapshot doc = await  groupRef
+           .document(challengeID)
+           .collection('groupId')
+           .document(groupId)
+           .collection('members')
+           .document(currentUser.id).get();
+       if(doc.exists){  setState(() {
+         memberExists = true;
+       });}
+
+     }
+     super.initState();
    }
-   checkIfMemberExists()async{
-     DocumentSnapshot doc = await  groupRef
-         .document(challengeId)
-         .collection('groupId')
-         .document(groupId)
-         .collection('members')
-         .document(currentUser.id).get();
-     setState(() {
-       memberExists = true;
-     });
-   }
+
 
   addChat(){
     groupRef
@@ -60,7 +62,7 @@ class _GroupChatsState extends State<GroupChats> {
       "id": currentUser.id,
       "username": currentUser.username,
       "timestamp": timestamp,
-      "challengeId":challengeId,
+      "challengeId":challengeID,
       "chatData": chatController.text,
       'timestamp': timestamp
 
@@ -71,7 +73,7 @@ class _GroupChatsState extends State<GroupChats> {
   buildGroupChat() {
     return StreamBuilder(
       stream:groupRef
-          .document(challengeId)
+          .document(challengeID)
           .collection('groupId')
           .document(groupId)
           .collection('members')

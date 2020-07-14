@@ -26,20 +26,7 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    googleSignIn.onCurrentUserChanged.listen((account) {
-      handleSignIn(account);
-    },
-        onError: (err){
-          print('Error signing in : $err');
-        }
-    );//Reauthenticate when app is opened!!
-    googleSignIn.signInSilently(suppressErrors: false)
-        .then((account){
-      handleSignIn(account);
 
-    }).catchError((err){
-      print('Error signing in : $err');
-    });
   }
   handleSignIn(GoogleSignInAccount account)async{
     if(account!= null) {
@@ -87,7 +74,9 @@ class _HomeState extends State<Home> {
 
   }
   login(){
-    googleSignIn.signIn();
+    googleSignIn.signIn().then((action){setState(() {
+      isAuth=true;
+    });});
   }
   logout(){
     googleSignIn.signOut();
@@ -114,12 +103,6 @@ class _HomeState extends State<Home> {
       });
     }
   }
-  buildGroup()async{
- setState(() {
-   createGroup();
- });
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>GroupChats() ));
-         }
   Widget buildAuthScreen() {
     return Scaffold(
       key: _scaffoldKey,
@@ -130,7 +113,8 @@ class _HomeState extends State<Home> {
             child: Center(child: Text('Challenege 1')),
             color: Colors.red,),
           onTap: (){
-            buildGroup();
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>GroupChats() ));
+
           },
         ),
       ),
@@ -176,6 +160,20 @@ class _HomeState extends State<Home> {
   }
   @override
   Widget build(BuildContext context) {
+    googleSignIn.onCurrentUserChanged.listen((account) {
+      handleSignIn(account);
+    },
+        onError: (err){
+          print('Error signing in : $err');
+        }
+    );//Reauthenticate when app is opened!!
+    googleSignIn.signInSilently(suppressErrors: false)
+        .then((account){
+      handleSignIn(account);
+
+    }).catchError((err){
+      print('Error signing in : $err');
+    });
     return isAuth ? buildAuthScreen() : buildUnAuthScreen();
   }
 }
