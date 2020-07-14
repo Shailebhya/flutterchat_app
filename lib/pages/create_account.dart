@@ -27,7 +27,7 @@ class _CreateAccountState extends State<CreateAccount> {
       );
       _scaffoldKey.currentState.showSnackBar(snackbar);
       Timer(Duration(seconds: 2), () {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> Home()));
+//        Navigator.push(context, MaterialPageRoute(builder: (context)=> Home()));
       });
     }
   }

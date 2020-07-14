@@ -9,7 +9,7 @@ final GoogleSignIn googleSignIn =GoogleSignIn();
 final usersRef = Firestore.instance.collection('users');
 final groupRef = Firestore.instance.collection('groups');
 final groupChatRef = Firestore.instance.collection('groupChats');
-User currentUser;
+User currentUser = User();
 final timestamp = DateTime.now();
 
 class Home extends StatefulWidget {
@@ -32,9 +32,7 @@ class _HomeState extends State<Home> {
     if(account!= null) {
       //print('User Signed in!:$account');
       await createUserInFirestore();
-      setState(() {
-        isAuth =true;
-      });
+
 //      configurePushNotifications();
     }
     else{
@@ -56,6 +54,7 @@ class _HomeState extends State<Home> {
 
       //get username from create account , use it to make new user doc.
       //in user collection
+      print("$username");
       usersRef.document(user.id).setData({
         "id": user.id,
         "username": username,
