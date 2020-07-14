@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
     if(!doc.exists){
       // if the ussr doesnt exist then we want to tske them to create account page
 
-      final username =await Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateAccount()));
+      final username =await Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateAccount(currentUser)));
 
       //get username from create account , use it to make new user doc.
       //in user collection

@@ -2,9 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterchat_app/models/user.dart';
 import 'package:flutterchat_app/pages/home.dart';
 
 class CreateAccount extends StatefulWidget {
+  CreateAccount(this.currentUser);
+  var currentUser;
+
   @override
   _CreateAccountState createState() => _CreateAccountState();
 }
@@ -92,7 +96,7 @@ class _CreateAccountState extends State<CreateAccount> {
                             return null;
                           }
                         },
-                        onChanged: (val) => challengeID = val,
+                        onChanged: (val) => currentUser.challengeID = val,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "ChallengeId",
