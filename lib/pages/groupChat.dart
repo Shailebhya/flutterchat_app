@@ -34,49 +34,13 @@ class _GroupChatsState extends State<GroupChats> {
   _GroupChatsState({ this.challengeID,
     this.groupId});
    @override
-   void initState(){
-
-     checkIfMemberExists()async{
-       DocumentSnapshot doc = await  groupRef
-           .document(challengeID)
-           .collection('groupId')
-           .document(groupId)
-           .collection('members')
-           .document(currentUser.id).get();
-       if(doc.exists){  setState(() {
-         memberExists = true;
-       });}
-
-     }
-     super.initState();
-   }
 
 
-  addChat(){
-    groupRef
-        .document(currentUser.challengeID)
-        .collection('groupId')
-        .document(groupId)
-        .collection('members')
-        .add({
-      "id": currentUser.id,
-      "username": currentUser.username,
-      "timestamp": timestamp,
-      "challengeId":challengeID,
-      "chatData": chatController.text,
-      'timestamp': timestamp
-
-    }
-    );
-    chatController.clear();
-  }
   buildGroupChat() {
     return StreamBuilder(
       stream:groupRef
-          .document(challengeID)
-          .collection('groupId')
-          .document(groupId)
-          .collection('members')
+          .document(currentUser.challengeID)
+          .collection('chats')
           .orderBy("timestamp", descending: false)
           .snapshots(),
       builder: (context, snapshot) {
@@ -91,9 +55,27 @@ class _GroupChatsState extends State<GroupChats> {
       },
     );
   }
+  addChat(){
+    groupRef
+        .document(currentUser.challengeID)
+        .collection('chats')
+        .add({
+      "id": currentUser.id,
+      "username": currentUser.username,
+      "avatarUrl": currentUser.photoUrl,
+      "timestamp": timestamp,
+      "challengeId":currentUser.challengeID,
+      "chatData": chatController.text,
+      "timestamp": timestamp
+
+    }
+    );
+    chatController.clear();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('sckbkj'),),
       body: Column(children: <Widget>[
         Expanded(
           child: buildGroupChat(),
@@ -102,10 +84,10 @@ class _GroupChatsState extends State<GroupChats> {
         ListTile(
           title: TextFormField(
             controller: chatController,
-            decoration: InputDecoration(labelText: "Write a comment..."),
+            decoration: InputDecoration(labelText: "Write a message..."),
           ),
           trailing: OutlineButton(
-            onPressed:addChat() ,
+            onPressed:addChat ,
             borderSide: BorderSide.none,
             child: Text("Post"),
           ),
@@ -118,14 +100,14 @@ class Chat extends StatelessWidget {
   final String username;
   final String userId;
   final String avatarUrl;
-  final String chat;
+  final String chatData;
   final Timestamp timestamp;
 
   Chat({
     this.username,
     this.userId,
     this.avatarUrl,
-    this.chat,
+    this.chatData,
     this.timestamp,
   });
 
@@ -133,7 +115,7 @@ class Chat extends StatelessWidget {
     return Chat(
       username: doc['username'],
       userId: doc['userId'],
-      chat: doc['comment'],
+      chatData: doc['chatData'],
       timestamp: doc['timestamp'],
       avatarUrl: doc['avatarUrl'],
     );
@@ -144,7 +126,7 @@ class Chat extends StatelessWidget {
     return Column(
       children: <Widget>[
         ListTile(
-          title: Text(chat),
+          title: Text(chatData),
           leading: CircleAvatar(
             backgroundImage: CachedNetworkImageProvider(avatarUrl),
           ),

@@ -32,7 +32,9 @@ class _HomeState extends State<Home> {
     if(account!= null) {
       //print('User Signed in!:$account');
       await createUserInFirestore();
-
+       setState(() {
+         isAuth=true;
+       });
 //      configurePushNotifications();
     }
     else{
@@ -54,7 +56,6 @@ class _HomeState extends State<Home> {
 
       //get username from create account , use it to make new user doc.
       //in user collection
-      print("$username");
       usersRef.document(user.id).setData({
         "id": user.id,
         "username": username,
@@ -80,28 +81,7 @@ class _HomeState extends State<Home> {
   logout(){
     googleSignIn.signOut();
   }
-  createGroup() async {
-    final GoogleSignInAccount user = googleSignIn.currentUser;
-    DocumentSnapshot doc =await groupRef.document(currentUser.challengeID).get();
 
-    if(!doc.exists){
-      groupRef
-          .document(currentUser.challengeID)
-          .collection('groupId')
-          .document(groupId)
-          .collection('members')
-          .document(user.id)
-          .setData({
-        "id": user.id,
-        "username": currentUser.username,
-        "timestamp": timestamp,
-        "challengeId":currentUser.challengeID,
-        "chatData": chatController.text,
-        'timestamp': timestamp
-
-      });
-    }
-  }
   Widget buildAuthScreen() {
     return Scaffold(
       key: _scaffoldKey,

@@ -31,7 +31,7 @@ class _CreateAccountState extends State<CreateAccount> {
       );
       _scaffoldKey.currentState.showSnackBar(snackbar);
       Timer(Duration(seconds: 2), () {
-//        Navigator.push(context, MaterialPageRoute(builder: (context)=> Home()));
+       Navigator.pop(context);
       });
     }
   }
@@ -96,7 +96,7 @@ class _CreateAccountState extends State<CreateAccount> {
                             return null;
                           }
                         },
-                        onChanged: (val) => currentUser.challengeID = val,
+                        onChanged: (val) => widget.currentUser.challengeID = val,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: "ChallengeId",
